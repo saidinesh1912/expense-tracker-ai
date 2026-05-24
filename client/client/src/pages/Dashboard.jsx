@@ -19,6 +19,9 @@ import {
   X,
 } from "lucide-react";
 
+const API_URL =
+  import.meta.env.VITE_API_URL;
+
 const Dashboard = ({
   darkMode,
 }) => {
@@ -90,10 +93,17 @@ const Dashboard = ({
 
       } catch (error) {
 
-        console.log(
-          error
-        );
-      }
+  console.log(
+    error.response?.data ||
+    error.message
+  );
+
+  alert(
+    error.response?.data?.message ||
+    "Failed to add expense"
+  );
+
+}
     };
 
   // LOAD DATA
