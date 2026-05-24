@@ -80,9 +80,9 @@ const fetchExpenses =
           `${API_URL}/api/expenses`,
           {
             headers: {
-              Authorization: token,
-              email: userEmail,
-            },
+  Authorization: `Bearer ${token}`,
+  email: userEmail,
+},
           }
         );
 
@@ -182,9 +182,8 @@ const fetchExpenses =
             `${API_URL}/api/expenses/${id}`,
           {
             headers: {
-              Authorization:
-                token,
-            },
+  Authorization: `Bearer ${token}`,
+},
           }
         );
 
