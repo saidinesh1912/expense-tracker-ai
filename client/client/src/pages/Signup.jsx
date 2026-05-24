@@ -79,9 +79,48 @@ const Signup = () => {
           || error.message
         );
 
-        alert(
-          "Signup Failed"
-        );
+        // USER EXISTS
+
+        if(
+
+          error.response?.data?.message ===
+          "User already exists"
+
+        ){
+
+          alert(
+            "User already exists"
+          );
+
+        }
+
+        // SERVER DOWN
+
+        else if(
+
+          !error.response
+
+        ){
+
+          alert(
+            "Signup Failed"
+          );
+
+        }
+
+        // OTHER BACKEND ERRORS
+
+        else{
+
+          alert(
+
+            error.response?.data?.message ||
+
+            "Signup Failed"
+
+          );
+
+        }
 
       }
 
