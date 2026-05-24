@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-
 import axios from "axios";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 const AIAssistant = () => {
 
@@ -28,7 +29,7 @@ const AIAssistant = () => {
     try {
 
       const res = await axios.get(
-        "http://localhost:5000/api/expenses",
+        `${API_URL}/api/expenses`,
         {
           headers: {
             Authorization: token,
@@ -42,7 +43,9 @@ const AIAssistant = () => {
     } catch (error) {
 
       console.log(error);
+
     }
+
   };
 
   // LOAD EXPENSES
@@ -72,7 +75,7 @@ const AIAssistant = () => {
     try {
 
       const res = await axios.post(
-        "http://localhost:5000/api/ai/insights",
+        `${API_URL}/api/ai/insights`,
         {
           expenses,
           question,
@@ -98,11 +101,13 @@ const AIAssistant = () => {
       );
 
       alert("AI failed");
+
     }
 
     setQuestion("");
 
     setLoading(false);
+
   };
 
   return (
@@ -114,11 +119,15 @@ const AIAssistant = () => {
       <div className="mb-10">
 
         <h1 className="text-5xl font-bold text-purple-400 mb-3">
+
           AI Financial Assistant
+
         </h1>
 
         <p className="text-zinc-400">
+
           Ask smart financial questions powered by AI
+
         </p>
 
       </div>
@@ -137,14 +146,21 @@ const AIAssistant = () => {
               <div className="text-zinc-500 text-center mt-20 leading-8">
 
                 Ask something like:
+
                 <br />
-                “How can I save money?”
+
+                "How can I save money?"
+
                 <br />
-                “Analyze my spending habits”
+
+                "Analyze my spending habits"
+
                 <br />
-                “Where am I overspending?”
+
+                "Where am I overspending?"
 
               </div>
+
             )
           }
 
@@ -163,6 +179,7 @@ const AIAssistant = () => {
                 {msg.content}
 
               </div>
+
             ))
           }
 
@@ -170,8 +187,11 @@ const AIAssistant = () => {
             loading && (
 
               <div className="bg-purple-500/20 border border-purple-400/20 p-5 rounded-3xl w-fit">
+
                 AI is thinking...
+
               </div>
+
             )
           }
 
@@ -189,9 +209,13 @@ const AIAssistant = () => {
               setQuestion(e.target.value)
             }
             onKeyDown={(e) => {
+
               if (e.key === "Enter") {
+
                 askAI();
+
               }
+
             }}
             className="flex-1 bg-black/30 border border-white/10 p-4 rounded-2xl outline-none"
           />
@@ -200,7 +224,9 @@ const AIAssistant = () => {
             onClick={askAI}
             className="bg-gradient-to-r from-cyan-500 to-purple-500 px-8 rounded-2xl font-bold hover:scale-105 transition"
           >
+
             Send
+
           </button>
 
         </div>
@@ -208,7 +234,9 @@ const AIAssistant = () => {
       </div>
 
     </div>
+
   );
+
 };
 
 export default AIAssistant;

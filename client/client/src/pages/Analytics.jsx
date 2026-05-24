@@ -15,6 +15,9 @@ import {
   CartesianGrid,
 } from "recharts";
 
+const API_URL =
+  import.meta.env.VITE_API_URL;
+
 const Analytics = ({
   darkMode,
 }) => {
@@ -31,6 +34,7 @@ const Analytics = ({
     );
 
   // CATEGORY COLORS
+
   const CATEGORY_COLORS = {
 
     Food: "#FF6B6B",
@@ -48,6 +52,7 @@ const Analytics = ({
   };
 
   // FETCH EXPENSES
+
   const fetchExpenses =
     async () => {
 
@@ -55,7 +60,7 @@ const Analytics = ({
 
         const res =
           await axios.get(
-            "http://localhost:5000/api/expenses",
+            `${API_URL}/api/expenses`,
             {
               headers: {
                 Authorization:
@@ -75,7 +80,9 @@ const Analytics = ({
         console.log(
           error
         );
+
       }
+
     };
 
   useEffect(() => {
@@ -85,6 +92,7 @@ const Analytics = ({
   }, []);
 
   // TOTAL EXPENSES
+
   const totalExpenses =
     expenses.reduce(
       (acc, item) =>
@@ -93,10 +101,12 @@ const Analytics = ({
     );
 
   // TOTAL TRANSACTIONS
+
   const totalTransactions =
     expenses.length;
 
   // CATEGORY DATA
+
   const categoryData = [];
 
   expenses.forEach(
@@ -114,28 +124,46 @@ const Analytics = ({
         existing.amount +=
           expense.amount;
 
-      } else {
+      }
+
+      else {
 
         categoryData.push({
+
           category:
             expense.category,
+
           amount:
             expense.amount,
+
         });
+
       }
+
     }
   );
 
-  // HIGHEST CATEGORY
+  // TOP CATEGORY
+
   const highestCategory =
     categoryData.reduce(
       (max, item) =>
-        item.amount > max.amount
+
+        item.amount >
+        max.amount
+
           ? item
+
           : max,
+
       {
-        category: "None",
-        amount: 0,
+
+        category:
+          "None",
+
+        amount:
+          0,
+
       }
     );
 
@@ -154,7 +182,9 @@ const Analytics = ({
       <div className="mb-10">
 
         <h1 className="text-5xl font-black text-cyan-400 mb-4">
+
           Expense Analytics
+
         </h1>
 
         <p
@@ -164,46 +194,34 @@ const Analytics = ({
               : "text-gray-600 text-lg"
           }
         >
+
           Smart financial insights and spending trends
+
         </p>
 
       </div>
 
-      {/* SUMMARY CARDS */}
+      {/* SUMMARY */}
 
       <div className="grid md:grid-cols-3 gap-6 mb-10">
 
-        {/* TOTAL */}
-
         <div
           className={`p-8 rounded-[32px] border backdrop-blur-3xl ${
             darkMode
               ? "bg-white/5 border-white/10"
               : "bg-white/40 border-white/30"
           }`}
-          style={{
-            boxShadow:
-              "0 8px 32px rgba(31,38,135,0.2)",
-          }}
         >
 
-          <p
-            className={
-              darkMode
-                ? "text-zinc-400 mb-3"
-                : "text-gray-600 mb-3"
-            }
-          >
-            Total Expenses
-          </p>
+          <p>Total Expenses</p>
 
           <h1 className="text-5xl font-black text-cyan-400">
+
             ₹ {totalExpenses}
+
           </h1>
 
         </div>
-
-        {/* TRANSACTIONS */}
 
         <div
           className={`p-8 rounded-[32px] border backdrop-blur-3xl ${
@@ -211,31 +229,17 @@ const Analytics = ({
               ? "bg-white/5 border-white/10"
               : "bg-white/40 border-white/30"
           }`}
-          style={{
-            boxShadow:
-              "0 8px 32px rgba(168,85,247,0.2)",
-          }}
         >
 
-          <p
-            className={
-              darkMode
-                ? "text-zinc-400 mb-3"
-                : "text-gray-600 mb-3"
-            }
-          >
-            Transactions
-          </p>
+          <p>Transactions</p>
 
           <h1 className="text-5xl font-black text-purple-400">
-            {
-              totalTransactions
-            }
+
+            {totalTransactions}
+
           </h1>
 
         </div>
-
-        {/* TOP CATEGORY */}
 
         <div
           className={`p-8 rounded-[32px] border backdrop-blur-3xl ${
@@ -243,21 +247,9 @@ const Analytics = ({
               ? "bg-white/5 border-white/10"
               : "bg-white/40 border-white/30"
           }`}
-          style={{
-            boxShadow:
-              "0 8px 32px rgba(255,77,109,0.2)",
-          }}
         >
 
-          <p
-            className={
-              darkMode
-                ? "text-zinc-400 mb-3"
-                : "text-gray-600 mb-3"
-            }
-          >
-            Top Category
-          </p>
+          <p>Top Category</p>
 
           <h1
             className="text-4xl font-black"
@@ -268,9 +260,9 @@ const Analytics = ({
                 ] || "#ffffff",
             }}
           >
-            {
-              highestCategory.category
-            }
+
+            {highestCategory.category}
+
           </h1>
 
         </div>
@@ -281,22 +273,12 @@ const Analytics = ({
 
       <div className="grid lg:grid-cols-2 gap-8">
 
-        {/* PIE CHART */}
-
-        <div
-          className={`p-8 rounded-[32px] border backdrop-blur-3xl h-[500px] ${
-            darkMode
-              ? "bg-white/5 border-white/10"
-              : "bg-white/40 border-white/30"
-          }`}
-          style={{
-            boxShadow:
-              "0 8px 32px rgba(31,38,135,0.2)",
-          }}
-        >
+        <div className="p-8 rounded-[32px] border backdrop-blur-3xl h-[500px]">
 
           <h2 className="text-3xl font-black mb-6">
+
             Category Breakdown
+
           </h2>
 
           <ResponsiveContainer
@@ -316,22 +298,27 @@ const Analytics = ({
                 label
               >
 
-                {categoryData.map(
-                  (
-                    entry,
-                    index
-                  ) => (
+                {
 
-                    <Cell
-                      key={index}
-                      fill={
-                        CATEGORY_COLORS[
-                          entry.category
-                        ]
-                      }
-                    />
+                  categoryData.map(
+                    (
+                      entry,
+                      index
+                    ) => (
+
+                      <Cell
+                        key={index}
+                        fill={
+                          CATEGORY_COLORS[
+                            entry.category
+                          ]
+                        }
+                      />
+
+                    )
                   )
-                )}
+
+                }
 
               </Pie>
 
@@ -343,22 +330,12 @@ const Analytics = ({
 
         </div>
 
-        {/* BAR CHART */}
-
-        <div
-          className={`p-8 rounded-[32px] border backdrop-blur-3xl h-[500px] ${
-            darkMode
-              ? "bg-white/5 border-white/10"
-              : "bg-white/40 border-white/30"
-          }`}
-          style={{
-            boxShadow:
-              "0 8px 32px rgba(31,38,135,0.2)",
-          }}
-        >
+        <div className="p-8 rounded-[32px] border backdrop-blur-3xl h-[500px]">
 
           <h2 className="text-3xl font-black mb-6">
+
             Expense Comparison
+
           </h2>
 
           <ResponsiveContainer
@@ -372,29 +349,13 @@ const Analytics = ({
 
               <CartesianGrid
                 strokeDasharray="3 3"
-                stroke={
-                  darkMode
-                    ? "#ffffff20"
-                    : "#00000020"
-                }
               />
 
               <XAxis
                 dataKey="category"
-                stroke={
-                  darkMode
-                    ? "#ffffff"
-                    : "#000000"
-                }
               />
 
-              <YAxis
-                stroke={
-                  darkMode
-                    ? "#ffffff"
-                    : "#000000"
-                }
-              />
+              <YAxis />
 
               <Tooltip />
 
@@ -408,22 +369,27 @@ const Analytics = ({
                 ]}
               >
 
-                {categoryData.map(
-                  (
-                    entry,
-                    index
-                  ) => (
+                {
 
-                    <Cell
-                      key={index}
-                      fill={
-                        CATEGORY_COLORS[
-                          entry.category
-                        ]
-                      }
-                    />
+                  categoryData.map(
+                    (
+                      entry,
+                      index
+                    ) => (
+
+                      <Cell
+                        key={index}
+                        fill={
+                          CATEGORY_COLORS[
+                            entry.category
+                          ]
+                        }
+                      />
+
+                    )
                   )
-                )}
+
+                }
 
               </Bar>
 
@@ -436,7 +402,9 @@ const Analytics = ({
       </div>
 
     </div>
+
   );
+
 };
 
 export default Analytics;

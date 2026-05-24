@@ -3,46 +3,74 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 
+const API_URL =
+  import.meta.env.VITE_API_URL;
+
 const Signup = () => {
 
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
+  const [formData,
+    setFormData] =
+    useState({
 
-  const handleChange = (e) => {
+      name: "",
+      email: "",
+      password: "",
 
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
     });
-  };
 
-  const handleSubmit = async (e) => {
+  const handleChange =
+    (e) => {
 
-    e.preventDefault();
+      setFormData({
 
-    try {
+        ...formData,
 
-      await axios.post(
-        "http://localhost:5000/api/auth/signup",
-        formData
-      );
+        [e.target.name]:
+          e.target.value,
 
-      alert("Signup Successful");
+      });
 
-      navigate("/");
+    };
 
-    } catch (error) {
+  const handleSubmit =
+    async (e) => {
 
-      console.log(error);
+      e.preventDefault();
 
-      alert("Signup Failed");
-    }
-  };
+      try {
+
+        await axios.post(
+
+          `${API_URL}/api/auth/signup`,
+
+          formData
+
+        );
+
+        alert(
+          "Signup Successful"
+        );
+
+        navigate("/");
+
+      }
+
+      catch (error) {
+
+        console.log(
+          error
+        );
+
+        alert(
+          "Signup Failed"
+        );
+
+      }
+
+    };
 
   return (
 
@@ -51,49 +79,90 @@ const Signup = () => {
       <div className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-10 shadow-2xl">
 
         <h1 className="text-5xl font-bold text-center text-purple-400 mb-3">
+
           Create Account
+
         </h1>
 
         <p className="text-zinc-400 text-center mb-10">
+
           Start managing your finances smartly
+
         </p>
 
         <form
-          onSubmit={handleSubmit}
+          onSubmit={
+            handleSubmit
+          }
           className="space-y-5"
         >
 
           <input
+
             type="text"
+
             name="name"
+
             placeholder="Enter Name"
-            value={formData.name}
-            onChange={handleChange}
+
+            value={
+              formData.name
+            }
+
+            onChange={
+              handleChange
+            }
+
             className="w-full bg-black/30 border border-white/10 p-4 rounded-2xl outline-none text-white"
+
           />
 
           <input
+
             type="email"
+
             name="email"
+
             placeholder="Enter Email"
-            value={formData.email}
-            onChange={handleChange}
+
+            value={
+              formData.email
+            }
+
+            onChange={
+              handleChange
+            }
+
             className="w-full bg-black/30 border border-white/10 p-4 rounded-2xl outline-none text-white"
+
           />
 
           <input
+
             type="password"
+
             name="password"
+
             placeholder="Enter Password"
-            value={formData.password}
-            onChange={handleChange}
+
+            value={
+              formData.password
+            }
+
+            onChange={
+              handleChange
+            }
+
             className="w-full bg-black/30 border border-white/10 p-4 rounded-2xl outline-none text-white"
+
           />
 
           <button
             className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 hover:scale-[1.02] transition duration-300 p-4 rounded-2xl font-bold text-white"
           >
+
             Signup
+
           </button>
 
         </form>
@@ -103,7 +172,9 @@ const Signup = () => {
           <div className="flex-1 h-[1px] bg-white/10"></div>
 
           <p className="text-zinc-400 text-sm">
+
             OR
+
           </p>
 
           <div className="flex-1 h-[1px] bg-white/10"></div>
@@ -114,7 +185,9 @@ const Signup = () => {
           className="w-full bg-white text-black flex items-center justify-center gap-3 p-4 rounded-2xl font-semibold hover:scale-[1.02] transition duration-300"
         >
 
-          <FcGoogle size={25} />
+          <FcGoogle
+            size={25}
+          />
 
           Sign up with Google
 
@@ -125,10 +198,15 @@ const Signup = () => {
           Already have an account?
 
           <Link
+
             to="/"
+
             className="text-purple-400 ml-2"
+
           >
+
             Login
+
           </Link>
 
         </p>
@@ -136,7 +214,9 @@ const Signup = () => {
       </div>
 
     </div>
+
   );
+
 };
 
 export default Signup;

@@ -73,7 +73,7 @@ const Dashboard = ({
 
         const res =
           await axios.get(
-            "http://localhost:5000/api/expenses",
+            `${API_URL}/api/expenses`,
             {
               headers: {
                 Authorization:
@@ -124,8 +124,7 @@ const Dashboard = ({
       try {
 
         await axios.post(
-          "http://localhost:5000/api/expenses",
-
+          `${API_URL}/api/expenses`,
           {
             ...formData,
             userEmail,
@@ -163,8 +162,8 @@ const Dashboard = ({
 
       try {
 
-        await axios.delete(
-          `http://localhost:5000/api/expenses/${id}`,
+          await axios.delete(
+            `${API_URL}/api/expenses/${id}`,
           {
             headers: {
               Authorization:
