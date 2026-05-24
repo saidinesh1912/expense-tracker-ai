@@ -141,9 +141,9 @@ const fetchExpenses =
 
           {
             headers: {
-              Authorization:
-                token,
-            },
+  Authorization: `Bearer ${token}`,
+  email: userEmail,
+}
           }
         );
 
