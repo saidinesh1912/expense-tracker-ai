@@ -4,7 +4,6 @@ import { useNavigate, Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 
 import { signInWithPopup } from "firebase/auth";
-
 import { auth, provider } from "../firebase";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -27,6 +26,7 @@ const Login = () => {
 
   };
 
+  // MANUAL LOGIN
   const handleSubmit = async (e) => {
 
     e.preventDefault();
@@ -34,13 +34,35 @@ const Login = () => {
     try {
 
       const res = await axios.post(
+
         `${API_URL}/api/auth/login`,
+
         formData
+
       );
+
+      console.log(
+        "LOGIN RESPONSE:",
+        res.data
+      );
+
+      const token =
+        res.data.token ||
+        res.data.user?.token;
+
+      if (!token) {
+
+        alert(
+          "Token not received from backend"
+        );
+
+        return;
+
+      }
 
       localStorage.setItem(
         "token",
-        res.data.token
+        token
       );
 
       localStorage.setItem(
@@ -50,44 +72,93 @@ const Login = () => {
 
       navigate("/dashboard");
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
       console.log(
-        error.response?.data || error.message
+        error.response?.data ||
+        error.message
       );
 
       alert(
+
         error.response?.data?.message ||
+
         "Login Failed"
+
       );
 
     }
 
   };
 
+  // GOOGLE LOGIN
   const googleLogin = async () => {
 
     try {
 
-      const result = await signInWithPopup(
-        auth,
-        provider
-      );
+      const result =
+        await signInWithPopup(
+          auth,
+          provider
+        );
+
+      const email =
+        result.user.email;
 
       localStorage.setItem(
         "userEmail",
-        result.user.email
+        email
       );
 
-      console.log(result.user);
+      // Ask backend for token
+      const res =
+        await axios.post(
 
-      navigate("/dashboard");
+          `${API_URL}/api/auth/google-login`,
 
-    } catch (error) {
+          {
+
+            email,
+            name:
+              result.user.displayName,
+
+          }
+
+        );
+
+      const token =
+        res.data.token;
+
+      if (!token) {
+
+        alert(
+          "Backend token missing"
+        );
+
+        return;
+
+      }
+
+      localStorage.setItem(
+        "token",
+        token
+      );
+
+      navigate(
+        "/dashboard"
+      );
+
+    }
+
+    catch (error) {
 
       console.log(error);
 
-      alert("Google Login Failed");
+      alert(
+        "Google Login Failed"
+      );
 
     }
 
