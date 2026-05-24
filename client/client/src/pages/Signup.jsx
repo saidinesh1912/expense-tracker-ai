@@ -3,8 +3,22 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 
+import {
+  signInWithPopup,
+} from "firebase/auth";
+
+import {
+  auth,
+  provider,
+} from "../firebase";
+
 const API_URL =
   import.meta.env.VITE_API_URL;
+
+console.log(
+  "API URL:",
+  API_URL
+);
 
 const Signup = () => {
 
@@ -15,32 +29,32 @@ const Signup = () => {
     setFormData] =
     useState({
 
-      name: "",
-      email: "",
-      password: "",
+      name:"",
+      email:"",
+      password:"",
 
     });
 
   const handleChange =
-    (e) => {
+    (e)=>{
 
       setFormData({
 
         ...formData,
 
         [e.target.name]:
-          e.target.value,
+        e.target.value,
 
       });
 
     };
 
   const handleSubmit =
-    async (e) => {
+    async(e)=>{
 
       e.preventDefault();
 
-      try {
+      try{
 
         await axios.post(
 
@@ -58,10 +72,11 @@ const Signup = () => {
 
       }
 
-      catch (error) {
+      catch(error){
 
         console.log(
-          error
+          error.response?.data
+          || error.message
         );
 
         alert(
@@ -72,150 +87,189 @@ const Signup = () => {
 
     };
 
-  return (
+  const googleSignup =
+    async()=>{
 
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-zinc-950 to-purple-950 p-5">
+      try{
 
-      <div className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-10 shadow-2xl">
+        const result =
+        await signInWithPopup(
 
-        <h1 className="text-5xl font-bold text-center text-purple-400 mb-3">
+          auth,
+          provider
 
-          Create Account
+        );
 
-        </h1>
+        localStorage.setItem(
 
-        <p className="text-zinc-400 text-center mb-10">
+          "userEmail",
 
-          Start managing your finances smartly
+          result.user.email
 
-        </p>
+        );
 
-        <form
-          onSubmit={
-            handleSubmit
-          }
-          className="space-y-5"
-        >
+        navigate(
+          "/dashboard"
+        );
 
-          <input
+      }
 
-            type="text"
+      catch(error){
 
-            name="name"
+        console.log(
+          error
+        );
 
-            placeholder="Enter Name"
+        alert(
+          "Google Signup Failed"
+        );
 
-            value={
-              formData.name
-            }
+      }
 
-            onChange={
-              handleChange
-            }
+    };
 
-            className="w-full bg-black/30 border border-white/10 p-4 rounded-2xl outline-none text-white"
+  return(
 
-          />
+<div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-zinc-950 to-purple-950 p-5">
 
-          <input
+<div className="w-full max-w-md bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-10 shadow-2xl">
 
-            type="email"
+<h1 className="text-5xl font-bold text-center text-purple-400 mb-3">
 
-            name="email"
+Create Account
 
-            placeholder="Enter Email"
+</h1>
 
-            value={
-              formData.email
-            }
+<p className="text-zinc-400 text-center mb-10">
 
-            onChange={
-              handleChange
-            }
+Start managing your finances smartly
 
-            className="w-full bg-black/30 border border-white/10 p-4 rounded-2xl outline-none text-white"
+</p>
 
-          />
+<form
+onSubmit={handleSubmit}
+className="space-y-5"
+>
 
-          <input
+<input
 
-            type="password"
+type="text"
 
-            name="password"
+name="name"
 
-            placeholder="Enter Password"
+placeholder="Enter Name"
 
-            value={
-              formData.password
-            }
+value={formData.name}
 
-            onChange={
-              handleChange
-            }
+onChange={handleChange}
 
-            className="w-full bg-black/30 border border-white/10 p-4 rounded-2xl outline-none text-white"
+required
 
-          />
+className="w-full bg-black/30 border border-white/10 p-4 rounded-2xl outline-none text-white"
 
-          <button
-            className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 hover:scale-[1.02] transition duration-300 p-4 rounded-2xl font-bold text-white"
-          >
+/>
 
-            Signup
+<input
 
-          </button>
+type="email"
 
-        </form>
+name="email"
 
-        <div className="flex items-center gap-3 my-8">
+placeholder="Enter Email"
 
-          <div className="flex-1 h-[1px] bg-white/10"></div>
+value={formData.email}
 
-          <p className="text-zinc-400 text-sm">
+onChange={handleChange}
 
-            OR
+required
 
-          </p>
+className="w-full bg-black/30 border border-white/10 p-4 rounded-2xl outline-none text-white"
 
-          <div className="flex-1 h-[1px] bg-white/10"></div>
+/>
 
-        </div>
+<input
 
-        <button
-          className="w-full bg-white text-black flex items-center justify-center gap-3 p-4 rounded-2xl font-semibold hover:scale-[1.02] transition duration-300"
-        >
+type="password"
 
-          <FcGoogle
-            size={25}
-          />
+name="password"
 
-          Sign up with Google
+placeholder="Enter Password"
 
-        </button>
+value={formData.password}
 
-        <p className="text-center text-zinc-400 mt-8">
+onChange={handleChange}
 
-          Already have an account?
+required
 
-          <Link
+className="w-full bg-black/30 border border-white/10 p-4 rounded-2xl outline-none text-white"
 
-            to="/"
+/>
 
-            className="text-purple-400 ml-2"
+<button
 
-          >
+type="submit"
 
-            Login
+className="w-full bg-gradient-to-r from-purple-500 to-cyan-500 hover:scale-[1.02] transition duration-300 p-4 rounded-2xl font-bold text-white"
 
-          </Link>
+>
 
-        </p>
+Signup
 
-      </div>
+</button>
 
-    </div>
+</form>
 
-  );
+<div className="flex items-center gap-3 my-8">
+
+<div className="flex-1 h-[1px] bg-white/10"></div>
+
+<p className="text-zinc-400 text-sm">
+
+OR
+
+</p>
+
+<div className="flex-1 h-[1px] bg-white/10"></div>
+
+</div>
+
+<button
+
+onClick={googleSignup}
+
+className="w-full bg-white text-black flex items-center justify-center gap-3 p-4 rounded-2xl font-semibold hover:scale-[1.02] transition duration-300"
+
+>
+
+<FcGoogle size={25}/>
+
+Sign up with Google
+
+</button>
+
+<p className="text-center text-zinc-400 mt-8">
+
+Already have an account?
+
+<Link
+
+to="/"
+
+className="text-purple-400 ml-2"
+
+>
+
+Login
+
+</Link>
+
+</p>
+
+</div>
+
+</div>
+
+);
 
 };
 
