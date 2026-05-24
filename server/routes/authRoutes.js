@@ -2,6 +2,8 @@ const express = require("express");
 
 const router = express.Router();
 
+const jwt = require("jsonwebtoken");
+
 const {
   signup,
   login,
@@ -16,11 +18,132 @@ const User =
 const upload =
   require("../middleware/upload");
 
+
 // SIGNUP
-router.post("/signup", signup);
+router.post(
+  "/signup",
+  signup
+);
+
 
 // LOGIN
-router.post("/login", login);
+router.post(
+  "/login",
+  login
+);
+
+
+// GOOGLE LOGIN
+router.post(
+
+  "/google-login",
+
+  async (req, res) => {
+
+    try {
+
+      const {
+        email,
+        name,
+      } = req.body;
+
+      if (!email) {
+
+        return res
+          .status(400)
+          .json({
+
+            message:
+              "Email required",
+
+          });
+
+      }
+
+      let user =
+        await User.findOne({
+
+          email,
+
+        });
+
+      // CREATE USER IF NOT EXISTS
+
+      if (!user) {
+
+        user =
+          await User.create({
+
+            name:
+              name ||
+              email.split("@")[0],
+
+            email,
+
+            password:
+              "google-auth-user",
+
+          });
+
+      }
+
+      // JWT TOKEN
+
+      const token =
+        jwt.sign(
+
+          {
+
+            id:
+              user._id,
+
+            email:
+              user.email,
+
+          },
+
+          process.env.JWT_SECRET,
+
+          {
+
+            expiresIn:
+              "7d",
+
+          }
+
+        );
+
+      res.status(200).json({
+
+        token,
+
+        email:
+          user.email,
+
+        message:
+          "Google Login Success",
+
+      });
+
+    }
+
+    catch (error) {
+
+      console.log(error);
+
+      res.status(500).json({
+
+        message:
+          error.message,
+
+      });
+
+    }
+
+  }
+
+);
+
 
 // UPLOAD PROFILE PICTURE
 router.post(
@@ -33,18 +156,21 @@ router.post(
 
     try {
 
-      const { email } = req.body;
+      const { email } =
+        req.body;
 
       const imageUrl =
         req.file.path;
 
-      // FIND USER
       let user =
         await User.findOne({
+
           email,
+
         });
 
-      // CREATE GOOGLE USER
+      // CREATE USER IF NOT EXISTS
+
       if (!user) {
 
         user =
@@ -63,13 +189,15 @@ router.post(
 
           });
 
-      } else {
+      }
 
-        // UPDATE PROFILE PIC
+      else {
+
         user.profilePic =
           imageUrl;
 
         await user.save();
+
       }
 
       res.status(200).json({
@@ -82,7 +210,9 @@ router.post(
 
       });
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
       console.log(error);
 
@@ -92,11 +222,15 @@ router.post(
           error.message,
 
       });
+
     }
+
   }
+
 );
 
-// REMOVE PROFILE PICTURE
+
+// REMOVE PROFILE PIC
 router.put(
 
   "/remove-profile-pic",
@@ -105,25 +239,31 @@ router.put(
 
     try {
 
-      const { email } = req.body;
+      const { email } =
+        req.body;
 
       const user =
         await User.findOne({
+
           email,
+
         });
 
       if (!user) {
 
-        return res.status(404).json({
+        return res
+          .status(404)
+          .json({
 
-          message:
-            "User not found",
+            message:
+              "User not found",
 
-        });
+          });
+
       }
 
-      // REMOVE IMAGE
-      user.profilePic = "";
+      user.profilePic =
+        "";
 
       await user.save();
 
@@ -134,7 +274,9 @@ router.put(
 
       });
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
       console.log(error);
 
@@ -144,9 +286,13 @@ router.put(
           error.message,
 
       });
+
     }
+
   }
+
 );
+
 
 // DELETE ACCOUNT
 router.delete(
@@ -157,16 +303,20 @@ router.delete(
 
     try {
 
-      const { email } = req.body;
+      const { email } =
+        req.body;
 
-      // DELETE USER EXPENSES
       await Expense.deleteMany({
-        userEmail: email,
+
+        userEmail:
+          email,
+
       });
 
-      // DELETE USER
       await User.deleteOne({
+
         email,
+
       });
 
       res.status(200).json({
@@ -176,7 +326,9 @@ router.delete(
 
       });
 
-    } catch (error) {
+    }
+
+    catch (error) {
 
       console.log(error);
 
@@ -186,8 +338,12 @@ router.delete(
           error.message,
 
       });
+
     }
+
   }
+
 );
 
-module.exports = router;
+module.exports =
+  router;
