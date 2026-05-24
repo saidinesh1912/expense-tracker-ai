@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_URL = import.meta.env.VITE_API_URL;
+const API_URL =
+  import.meta.env.VITE_API_URL;
 
 const AIAssistant = () => {
 
@@ -23,219 +24,325 @@ const AIAssistant = () => {
   const userEmail =
     localStorage.getItem("userEmail");
 
-  // FETCH USER EXPENSES
-  const fetchExpenses = async () => {
+  // FETCH EXPENSES
 
-    try {
+  const fetchExpenses =
+    async () => {
 
-      const res = await axios.get(
-        `${API_URL}/api/expenses`,
-        {
-          headers: {
-            Authorization: token,
-            email: userEmail,
-          },
-        }
-      );
+      try {
 
-      setExpenses(res.data);
+        const res =
+          await axios.get(
 
-    } catch (error) {
+            `${API_URL}/api/expenses`,
 
-      console.log(error);
+            {
 
-    }
+              headers: {
 
-  };
+                Authorization: token,
 
-  // LOAD EXPENSES
+                email: userEmail,
+
+              },
+
+            }
+
+          );
+
+        setExpenses(
+          res.data
+        );
+
+      }
+
+      catch (error) {
+
+        console.log(
+          "Expense Fetch Error:",
+          error.response?.data ||
+          error.message
+        );
+
+      }
+
+    };
+
   useEffect(() => {
 
     fetchExpenses();
 
   }, []);
 
-  // ASK AI
-  const askAI = async () => {
+  // AI REQUEST
 
-    if (!question.trim()) return;
+  const askAI =
+    async () => {
 
-    const userMessage = {
-      role: "user",
-      content: question,
-    };
+      if (
+        !question.trim()
+      ) return;
 
-    setMessages((prev) => [
-      ...prev,
-      userMessage,
-    ]);
+      const userMessage = {
 
-    setLoading(true);
+        role: "user",
 
-    try {
+        content: question,
 
-      const res = await axios.post(
-        `${API_URL}/api/ai/insights`,
-        {
-          expenses,
-          question,
-        }
-      );
-
-      const aiMessage = {
-        role: "assistant",
-        content: res.data.insight,
       };
 
-      setMessages((prev) => [
-        ...prev,
-        aiMessage,
-      ]);
+      setMessages(
 
-    } catch (error) {
+        (prev) => [
 
-      console.log(error);
+          ...prev,
 
-      console.log(
-        error.response?.data
+          userMessage,
+
+        ]
+
       );
 
-      alert("AI failed");
+      setLoading(true);
 
-    }
+      try {
 
-    setQuestion("");
+        console.log(
+          "Sending to:",
+          `${API_URL}/api/ai/insights`
+        );
 
-    setLoading(false);
+        const res =
+          await axios.post(
 
-  };
+            `${API_URL}/api/ai/insights`,
+
+            {
+
+              expenses,
+
+              question,
+
+            }
+
+          );
+
+        const aiMessage = {
+
+          role:
+            "assistant",
+
+          content:
+
+            res.data.insight ||
+
+            "No AI response",
+
+        };
+
+        setMessages(
+
+          (prev) => [
+
+            ...prev,
+
+            aiMessage,
+
+          ]
+
+        );
+
+      }
+
+      catch (error) {
+
+        console.log(
+
+          "AI ERROR:",
+
+          error.response?.data ||
+
+          error.message
+
+        );
+
+        alert(
+
+          error.response?.data?.message ||
+
+          "AI failed"
+
+        );
+
+      }
+
+      setQuestion("");
+
+      setLoading(false);
+
+    };
 
   return (
 
-    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-950 to-purple-950 text-white p-10">
+<div className="min-h-screen bg-gradient-to-br from-black via-zinc-950 to-purple-950 text-white p-10">
 
-      {/* HEADER */}
+<div className="mb-10">
 
-      <div className="mb-10">
+<h1 className="text-5xl font-bold text-purple-400 mb-3">
 
-        <h1 className="text-5xl font-bold text-purple-400 mb-3">
+AI Financial Assistant
 
-          AI Financial Assistant
+</h1>
 
-        </h1>
+<p className="text-zinc-400">
 
-        <p className="text-zinc-400">
+Ask smart financial questions powered by AI
 
-          Ask smart financial questions powered by AI
+</p>
 
-        </p>
+</div>
 
-      </div>
+<div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 h-[600px] flex flex-col">
 
-      {/* CHAT BOX */}
+<div className="flex-1 overflow-y-auto space-y-5 mb-6">
 
-      <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-8 h-[600px] flex flex-col">
+{
 
-        {/* MESSAGES */}
+messages.length===0 &&
 
-        <div className="flex-1 overflow-y-auto space-y-5 mb-6">
+<div className="text-zinc-500 text-center mt-20 leading-8">
 
-          {
-            messages.length === 0 && (
+Ask:
 
-              <div className="text-zinc-500 text-center mt-20 leading-8">
+<br/>
 
-                Ask something like:
+"Analyze my spending"
 
-                <br />
+<br/>
 
-                "How can I save money?"
+"Where am I overspending?"
 
-                <br />
+<br/>
 
-                "Analyze my spending habits"
+"How can I save money?"
 
-                <br />
+</div>
 
-                "Where am I overspending?"
+}
 
-              </div>
+{
 
-            )
-          }
+messages.map(
 
-          {
-            messages.map((msg, index) => (
+(msg,index)=>(
 
-              <div
-                key={index}
-                className={`max-w-[75%] p-5 rounded-3xl whitespace-pre-line ${
-                  msg.role === "user"
-                    ? "ml-auto bg-cyan-500/20 border border-cyan-400/20"
-                    : "bg-purple-500/20 border border-purple-400/20"
-                }`}
-              >
+<div
 
-                {msg.content}
+key={index}
 
-              </div>
+className={`max-w-[75%] p-5 rounded-3xl whitespace-pre-line ${
+msg.role==="user"
+?
+"ml-auto bg-cyan-500/20 border border-cyan-400/20"
+:
+"bg-purple-500/20 border border-purple-400/20"
+}`}
 
-            ))
-          }
+>
 
-          {
-            loading && (
+{msg.content}
 
-              <div className="bg-purple-500/20 border border-purple-400/20 p-5 rounded-3xl w-fit">
+</div>
 
-                AI is thinking...
+)
 
-              </div>
+)
 
-            )
-          }
+}
 
-        </div>
+{
 
-        {/* INPUT */}
+loading &&
 
-        <div className="flex gap-4">
+<div className="bg-purple-500/20 border border-purple-400/20 p-5 rounded-3xl w-fit">
 
-          <input
-            type="text"
-            placeholder="Ask AI about your finances..."
-            value={question}
-            onChange={(e) =>
-              setQuestion(e.target.value)
-            }
-            onKeyDown={(e) => {
+AI is thinking...
 
-              if (e.key === "Enter") {
+</div>
 
-                askAI();
+}
 
-              }
+</div>
 
-            }}
-            className="flex-1 bg-black/30 border border-white/10 p-4 rounded-2xl outline-none"
-          />
+<div className="flex gap-4">
 
-          <button
-            onClick={askAI}
-            className="bg-gradient-to-r from-cyan-500 to-purple-500 px-8 rounded-2xl font-bold hover:scale-105 transition"
-          >
+<input
 
-            Send
+type="text"
 
-          </button>
+placeholder="Ask AI about finances..."
 
-        </div>
+value={question}
 
-      </div>
+onChange={(e)=>{
 
-    </div>
+setQuestion(
+e.target.value
+)
 
-  );
+}}
+
+onKeyDown={(e)=>{
+
+if(
+
+e.key==="Enter"
+
+){
+
+askAI();
+
+}
+
+}}
+
+className="flex-1 bg-black/30 border border-white/10 p-4 rounded-2xl outline-none"
+
+/>
+
+<button
+
+onClick={askAI}
+
+disabled={loading}
+
+className="bg-gradient-to-r from-cyan-500 to-purple-500 px-8 rounded-2xl font-bold hover:scale-105 transition"
+
+>
+
+{
+
+loading
+
+?
+
+"Thinking..."
+
+:
+
+"Send"
+
+}
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+);
 
 };
 
