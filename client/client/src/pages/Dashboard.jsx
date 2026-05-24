@@ -91,16 +91,11 @@ const Dashboard = ({
           res.data
         );
 
-      } catch (error) {
+      } } catch (error) {
 
   console.log(
     error.response?.data ||
     error.message
-  );
-
-  alert(
-    error.response?.data?.message ||
-    "Failed to add expense"
   );
 
 }
@@ -134,11 +129,16 @@ const Dashboard = ({
       try {
 
         await axios.post(
-          `${API_URL}/api/expenses`,
-          {
-            ...formData,
-            userEmail,
-          },
+  `${API_URL}/api/expenses`,
+  {
+    ...formData,
+
+    amount:Number(
+      formData.amount
+    ),
+
+    userEmail,
+  },
 
           {
             headers: {
@@ -158,12 +158,19 @@ const Dashboard = ({
 
         fetchExpenses();
 
-      } catch (error) {
+      }  catch (error) {
 
-        console.log(
-          error
-        );
-      }
+  console.log(
+    error.response?.data ||
+    error.message
+  );
+
+  alert(
+    error.response?.data?.message ||
+    "Failed to add expense"
+  );
+
+}
     };
 
   // DELETE EXPENSE
