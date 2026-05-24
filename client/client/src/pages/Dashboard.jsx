@@ -69,38 +69,37 @@ const Dashboard = ({
   };
 
   // FETCH EXPENSES
-  const fetchExpenses =
-    async () => {
+ // FETCH EXPENSES
+const fetchExpenses =
+  async () => {
 
-      try {
+    try {
 
-        const res =
-          await axios.get(
-            `${API_URL}/api/expenses`,
-            {
-              headers: {
-                Authorization:
-                  token,
-                email:
-                  userEmail,
-              },
-            }
-          );
-
-        setExpenses(
-          res.data
+      const res =
+        await axios.get(
+          `${API_URL}/api/expenses`,
+          {
+            headers: {
+              Authorization: token,
+              email: userEmail,
+            },
+          }
         );
 
-      } } catch (error) {
+      setExpenses(
+        res.data
+      );
 
-  console.log(
-    error.response?.data ||
-    error.message
-  );
+    } catch (error) {
 
-}
-    };
+      console.log(
+        error.response?.data ||
+        error.message
+      );
 
+    }
+
+};
   // LOAD DATA
   useEffect(() => {
 
